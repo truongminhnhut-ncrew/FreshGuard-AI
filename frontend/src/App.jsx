@@ -1,20 +1,12 @@
 import React from 'react';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import Introduction from './components/Introduction';
-import Architecture from './components/Architecture';
-import ProphetExplainer from './components/ProphetExplainer';
 import DecisionDashboard from './components/DecisionDashboard';
 
 function App() {
   return (
     <div className="app-container">
       <Header />
-      <Hero />
       <main style={{ flexGrow: 1 }}>
-        <Introduction />
-        <Architecture />
-        <ProphetExplainer />
         <DecisionDashboard />
       </main>
       <footer className="app-footer">

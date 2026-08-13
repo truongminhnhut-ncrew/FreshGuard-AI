@@ -21,14 +21,17 @@ export default function Header() {
           <span className="logo-badge">BHX DSS</span>
         </div>
       </div>
-      <nav>
-        <ul className="nav-menu">
-          <li><a href="#about" className="nav-link">Bối cảnh & Bài toán</a></li>
-          <li><a href="#architecture" className="nav-link">Kiến trúc giải pháp</a></li>
-          <li><a href="#prophet" className="nav-link">Thuật toán Prophet</a></li>
-          <li><a href="#demo" className="nav-link btn-demo-link">Trải nghiệm Demo</a></li>
-        </ul>
-      </nav>
+      <div style={{
+        fontSize: '0.85rem',
+        fontWeight: 700,
+        color: 'var(--text-secondary)',
+        background: 'var(--bg-secondary)',
+        padding: '6px 12px',
+        borderRadius: '20px',
+        border: '1px solid var(--border)'
+      }}>
+        Hệ Thống Ra Quyết Định Nhập Hàng Tối Ưu
+      </div>
     </header>
   );
 }
