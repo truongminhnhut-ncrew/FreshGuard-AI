@@ -1,0 +1,18 @@
+# Netlify deployment configuration for FreshGuard AI React application
+
+[build]
+  # The directory where Netlify runs the build command
+  base = "frontend"
+  
+  # The directory that contains the deploy-ready static files after build
+  publish = "dist"
+  
+  # The build command to run inside the base directory
+  command = "npm run build"
+
+# Redirect rules for Single Page Applications (SPA)
+# Redirects all traffic to index.html so React Router handles page routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle } from 'lucide-react';
+import { initialProducts, calculateInventory } from '../data/products';
 
 export default function DecisionDashboard() {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ export default function DecisionDashboard() {
   const [Z, setZ] = useState(1.65);
   const [Icurrent, setIcurrent] = useState(0);
 
-  // Calculation results from backend
+  // Calculation results from local helpers
   const [results, setResults] = useState({
     SS: 0,
     ROP: 0,
@@ -23,21 +24,13 @@ export default function DecisionDashboard() {
     statusColor: 'green'
   });
 
-  // Fetch initial products
+  // Load initial products locally
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        if (data.length > 0) {
-          selectProduct(data[0]);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error fetching products:", err);
-        setLoading(false);
-      });
+    setProducts(initialProducts);
+    if (initialProducts.length > 0) {
+      selectProduct(initialProducts[0]);
+    }
+    setLoading(false);
   }, []);
 
   const selectProduct = (prod) => {
@@ -49,24 +42,11 @@ export default function DecisionDashboard() {
     setIcurrent(prod.I_current);
   };
 
-  // Recalculate indicators when inputs change
+  // Recalculate indicators when inputs change locally
   useEffect(() => {
     if (!selectedProduct) return;
-
-    const payload = { D, sigma_d: sigmaD, L, Z, I_current: Icurrent };
-
-    fetch('http://localhost:5000/api/calculate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-      .then(res => res.json())
-      .then(data => {
-        setResults(data);
-      })
-      .catch(err => {
-        console.error("Error calculating indicators:", err);
-      });
+    const res = calculateInventory(D, sigmaD, L, Z, Icurrent);
+    setResults(res);
   }, [D, sigmaD, L, Z, Icurrent, selectedProduct]);
 
   if (loading) {

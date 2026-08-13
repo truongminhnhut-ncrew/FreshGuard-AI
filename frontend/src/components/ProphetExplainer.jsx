@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sliders, HelpCircle, Activity } from 'lucide-react';
+import { generateLocalForecast } from '../data/products';
 
 export default function ProphetExplainer() {
   const [trend, setTrend] = useState(1.0);
@@ -11,25 +12,11 @@ export default function ProphetExplainer() {
   const [activeComponent, setActiveComponent] = useState('combined'); // combined, trend, weekly, holiday
 
   useEffect(() => {
-    let active = true;
     setLoading(true);
-    // Fetch forecast from our Node.js backend
-    fetch(`http://localhost:5000/api/forecast/ba-roi-heo-cp?trend=${trend}&seasonality=${seasonality}&holiday=${holiday}&noise=${noise}`)
-      .then(res => res.json())
-      .then(data => {
-        if (active) {
-          setForecastData(data.data || []);
-          setLoading(false);
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching forecast:", err);
-        setLoading(false);
-      });
-
-    return () => {
-      active = false;
-    };
+    // Generate simulated forecast client-side for serverless deployment
+    const result = generateLocalForecast('ba-roi-heo-cp', trend, seasonality, holiday, noise);
+    setForecastData(result.data || []);
+    setLoading(false);
   }, [trend, seasonality, holiday, noise]);
 
   // SVG Chart parameters
