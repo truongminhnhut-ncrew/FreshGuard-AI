@@ -56,11 +56,16 @@ export default function DecisionDashboard({ onOpenGuide }) {
     setApproved(false);
 
     // Set specific MAPE for each product
-    if (prod.id === 'ba-roi-heo-cp') setMape('8.4%');
-    else if (prod.id === 'dui-heo-cp') setMape('7.8%');
-    else if (prod.id === 'ca-dieu-hong') setMape('10.2%');
-    else if (prod.id === 'trung-ga-10') setMape('5.2%');
-    else if (prod.id === 'tom-the-cp') setMape('9.1%');
+    const mapeMap = {
+      'ba-roi-heo-cp': '8.4%', 'dui-heo-cp': '7.8%', 'ca-dieu-hong': '10.2%',
+      'trung-ga-10': '5.2%',  'tom-the-cp': '9.1%',  'nac-vai-heo': '8.9%',
+      'bo-than-cp':  '11.3%', 'uc-ga-cn':   '7.5%',  'ca-basa-fillet': '12.1%',
+      'ca-thu-cat-khuc': '10.8%', 'tom-su-tuoi': '9.7%', 'muc-ong-tuoi': '13.2%',
+      'ngheu-trang': '14.5%', 'rau-muong': '16.2%',  'cai-ngot': '15.8%',
+      'ca-chua': '12.4%',    'dua-leo': '13.7%',     'xa-lach-lolo': '17.1%',
+      'ca-rot': '11.9%',     'khoai-tay': '9.3%',    'hanh-la': '18.5%',
+    };
+    setMape(mapeMap[prod.id] || '10.0%');
   };
 
   // Recalculate indicators when inputs change locally
@@ -222,8 +227,14 @@ export default function DecisionDashboard({ onOpenGuide }) {
                     background: dotColor, boxShadow: `0 0 6px ${dotColor}`
                   }} />
 
-                  <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{prod.name}</div>
-                  <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: '0.25rem', display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <span style={{ fontSize: '1.05rem' }}>{prod.emoji}</span>
+                    <span>{prod.name}</span>
+                  </div>
+                  <div style={{ fontSize: '0.72rem', marginTop: '0.2rem', marginBottom: '0.15rem' }}>
+                    <span style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: '4px', padding: '1px 6px', color: 'var(--text-secondary)', fontWeight: 600 }}>{prod.category}</span>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: '0.1rem', display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: dotColor, fontWeight: 600 }}>{statusText}</span>
                     <strong>Tồn: {prod.I_current} {prod.unit}</strong>
                   </div>
