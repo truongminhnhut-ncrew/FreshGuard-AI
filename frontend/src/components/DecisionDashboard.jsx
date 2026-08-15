@@ -156,7 +156,7 @@ export default function DecisionDashboard() {
         {/* Khu vực 1 — Bảng tổng quan (Overview Panel) */}
         <div className="dashboard-sidebar">
           <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
-            <Package size={18} /> KHU VỰC 1: BẢNG TỔNG QUAN
+            <Package size={18} /> BẢNG TỔNG QUAN TỒN KHO
           </h3>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
             Giám sát danh sách mặt hàng tươi sống theo trạng thái tồn kho thực tế.
@@ -250,7 +250,7 @@ export default function DecisionDashboard() {
                 </div>
                 <div style={{ flexGrow: 1 }}>
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>KHU VỰC 4: GIÁM SÁT AI</span>
+                    <span>GIÁM SÁT MÔ HÌNH AI</span>
                     <span style={{
                       color: modelStatus === 'RETRAINING' ? 'var(--warning)' : 'var(--primary)',
                       fontWeight: 800
@@ -291,7 +291,7 @@ export default function DecisionDashboard() {
                   padding: '1.5rem'
                 }}>
                   <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.75rem' }}>
-                    KHU VỰC 2: ĐỀ XUẤT NHẬP HÀNG (ORDER RECOMMENDATION)
+                    ĐỀ XUẤT NHẬP HÀNG (ORDER RECOMMENDATION)
                   </h4>
                   
                   {approved ? (
@@ -370,7 +370,7 @@ export default function DecisionDashboard() {
                   padding: '1.25rem 1.5rem'
                 }}>
                   <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <HelpCircle size={16} /> KHU VỰC 3: GIẢI THÍCH LÝ DO
+                    <HelpCircle size={16} /> GIẢI THÍCH LÝ DO (EXPLAINABILITY)
                   </h4>
                   <p style={{
                     fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.5',
