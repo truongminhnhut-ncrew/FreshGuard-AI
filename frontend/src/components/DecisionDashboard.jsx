@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle, Check, Edit3, HeartPulse, Settings, BookOpen } from 'lucide-react';
+import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle, Check, Edit3, HeartPulse, Settings, BookOpen, ChevronUp, ChevronDown } from 'lucide-react';
 import { initialProducts, calculateInventory } from '../data/products';
 
 export default function DecisionDashboard({ onOpenGuide }) {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   // Editable parameters for active product
   const [D, setD] = useState(0);
@@ -192,81 +193,187 @@ export default function DecisionDashboard({ onOpenGuide }) {
 
         {/* Khu vực 1 — Bảng tổng quan (Overview Panel) */}
         <div className="dashboard-sidebar">
+
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h3 style={{ fontSize: '0.95rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', margin: 0 }}>
               <Package size={16} style={{ flexShrink: 0 }} /> BẢNG TỔNG QUAN TỒN KHO
             </h3>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: '99px', padding: '2px 8px', fontWeight: 700 }}>
-              {products.length} mặt hàng
+              {carouselIndex + 1} / {products.length}
             </span>
           </div>
-          <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0 }}>
-            Cuộn để xem toàn bộ danh sách. Nhấn chọn mặt hàng để phân tích.
-          </p>
 
-          {/* Scrollable Product Box */}
-          <div className="product-scroll-box">
-            {products.map(prod => {
-              const statusColor = getOverviewColor(prod);
-              const statusText = getOverviewStatusText(prod);
+          {/* Carousel Card */}
+          {products.length > 0 && (() => {
+            const prod = products[carouselIndex];
+            const statusColor = getOverviewColor(prod);
+            const statusText = getOverviewStatusText(prod);
+            let dotColor = '#10b981';
+            if (statusColor === 'red') dotColor = '#ef4444';
+            else if (statusColor === 'yellow') dotColor = '#f59e0b';
+            else if (statusColor === 'orange') dotColor = '#f97316';
+            const { SS, ROP, Q } = calculateInventory(prod.D, prod.sigma_d, prod.L, prod.Z, prod.I_current);
+            const isSelected = selectedProduct && selectedProduct.id === prod.id;
 
-              let dotColor = '#10b981';
-              if (statusColor === 'red') dotColor = '#ef4444';
-              else if (statusColor === 'yellow') dotColor = '#f59e0b';
-              else if (statusColor === 'orange') dotColor = '#f97316';
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
 
-              return (
-                <div
-                  key={prod.id}
-                  className={`product-option ${selectedProduct && selectedProduct.id === prod.id ? 'active' : ''}`}
-                  onClick={() => selectProduct(prod)}
+                {/* Up button */}
+                <button
+                  onClick={() => {
+                    const idx = (carouselIndex - 1 + products.length) % products.length;
+                    setCarouselIndex(idx);
+                    selectProduct(products[idx]);
+                  }}
                   style={{
+                    width: '100%', padding: '0.4rem', border: '1px solid var(--border)',
+                    borderRadius: '8px', background: 'var(--bg-secondary)', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center',
+                    color: 'var(--text-secondary)', transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                >
+                  <ChevronUp size={18} />
+                </button>
+
+                {/* Product Card */}
+                <div
+                  onClick={() => { selectProduct(prod); }}
+                  style={{
+                    border: `2px solid ${isSelected ? 'var(--primary)' : dotColor + '55'}`,
+                    borderRadius: '12px',
+                    padding: '1.25rem',
+                    background: isSelected ? 'var(--primary-light)' : 'white',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s',
+                    boxShadow: `0 4px 16px ${dotColor}22`,
                     position: 'relative',
-                    paddingLeft: '1.4rem',
-                    borderLeft: selectedProduct && selectedProduct.id === prod.id ? '3px solid var(--primary)' : '1px solid var(--border)',
+                    overflow: 'hidden',
                   }}
                 >
-                  {/* Status dot */}
-                  <span style={{
-                    position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)',
-                    width: '8px', height: '8px', borderRadius: '50%',
-                    background: dotColor, boxShadow: `0 0 5px ${dotColor}`,
-                    flexShrink: 0,
+                  {/* Color accent bar */}
+                  <div style={{
+                    position: 'absolute', top: 0, left: 0, right: 0,
+                    height: '4px', background: dotColor, borderRadius: '12px 12px 0 0'
                   }} />
 
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem', lineHeight: 1.3 }}>
-                    <span>{prod.emoji}</span>
-                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{prod.name}</span>
+                  {/* Emoji + Name */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginTop: '0.25rem' }}>
+                    <span style={{ fontSize: '2rem', lineHeight: 1 }}>{prod.emoji}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: 800, lineHeight: 1.3, color: 'var(--text-primary)' }}>{prod.name}</div>
+                      <div style={{ marginTop: '0.3rem' }}>
+                        <span style={{
+                          fontSize: '0.68rem', fontWeight: 700, padding: '2px 8px',
+                          borderRadius: '99px', background: dotColor + '22', color: dotColor,
+                          border: `1px solid ${dotColor}44`
+                        }}>● {statusText}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '0.7rem', marginTop: '0.15rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ color: dotColor, fontWeight: 600, whiteSpace: 'nowrap' }}>{statusText}</span>
-                    <span style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Tồn: <strong>{prod.I_current}</strong> {prod.unit}</span>
+
+                  {/* Stats grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '1rem' }}>
+                    {[
+                      { label: 'Tồn kho', value: `${prod.I_current} ${prod.unit}`, highlight: true },
+                      { label: 'Đề xuất nhập Q', value: `${Q} ${prod.unit}`, highlight: Q > 0 },
+                      { label: 'ROP', value: ROP },
+                      { label: 'SS (an toàn)', value: SS },
+                    ].map(({ label, value, highlight }) => (
+                      <div key={label} style={{
+                        background: highlight ? dotColor + '11' : 'var(--bg-secondary)',
+                        border: `1px solid ${highlight ? dotColor + '33' : 'var(--border)'}`,
+                        borderRadius: '8px', padding: '0.5rem 0.6rem'
+                      }}>
+                        <div style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 800, color: highlight ? dotColor : 'var(--text-primary)', marginTop: '0.1rem' }}>{value}</div>
+                      </div>
+                    ))}
                   </div>
+
+                  {/* Phân tích button */}
+                  <button
+                    onClick={e => { e.stopPropagation(); selectProduct(prod); }}
+                    style={{
+                      marginTop: '0.85rem', width: '100%', padding: '0.5rem',
+                      background: isSelected ? 'var(--primary)' : 'white',
+                      color: isSelected ? 'white' : 'var(--primary)',
+                      border: '1.5px solid var(--primary)', borderRadius: '8px',
+                      fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {isSelected ? '✓ Đang phân tích' : '→ Chọn để phân tích'}
+                  </button>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Down button */}
+                <button
+                  onClick={() => {
+                    const idx = (carouselIndex + 1) % products.length;
+                    setCarouselIndex(idx);
+                    selectProduct(products[idx]);
+                  }}
+                  style={{
+                    width: '100%', padding: '0.4rem', border: '1px solid var(--border)',
+                    borderRadius: '8px', background: 'var(--bg-secondary)', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'center', alignItems: 'center',
+                    color: 'var(--text-secondary)', transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.color = 'var(--primary)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                >
+                  <ChevronDown size={18} />
+                </button>
+
+                {/* Dot progress indicator */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', flexWrap: 'wrap', padding: '0 0.5rem' }}>
+                  {products.map((p, i) => {
+                    const sc = getOverviewColor(p);
+                    let dc = '#10b981';
+                    if (sc === 'red') dc = '#ef4444';
+                    else if (sc === 'yellow') dc = '#f59e0b';
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => { setCarouselIndex(i); selectProduct(products[i]); }}
+                        title={p.name}
+                        style={{
+                          width: i === carouselIndex ? '20px' : '8px',
+                          height: '8px',
+                          borderRadius: '99px',
+                          background: i === carouselIndex ? dc : dc + '44',
+                          border: 'none', cursor: 'pointer',
+                          transition: 'all 0.25s', padding: 0,
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
+              </div>
+            );
+          })()}
 
           {/* Color Legend */}
           <div style={{
-            marginTop: '2rem', padding: '1rem', background: 'var(--bg-secondary)',
-            borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.75rem'
+            padding: '0.75rem', background: 'var(--bg-secondary)',
+            borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.72rem'
           }}>
-            <div style={{ fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Chú giải trạng thái:</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
-                <span>Đỏ: Cần nhập gấp</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b' }} />
-                <span>Vàng: Cân nhắc nhập số lượng phù hợp</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }} />
-                <span>Xanh: Chưa cần nhập thêm</span>
-              </div>
+            <div style={{ fontWeight: 700, marginBottom: '0.4rem', color: 'var(--text-primary)' }}>Chú giải trạng thái:</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+              {[
+                { color: '#ef4444', label: 'Đỏ: Cần nhập gấp' },
+                { color: '#f59e0b', label: 'Vàng: Cân nhắc nhập' },
+                { color: '#10b981', label: 'Xanh: Chưa cần nhập' },
+              ].map(({ color, label }) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: color, display: 'inline-block', flexShrink: 0 }} />
+                  <span>{label}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
