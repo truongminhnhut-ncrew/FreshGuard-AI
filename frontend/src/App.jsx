@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
 import DecisionDashboard from './components/DecisionDashboard';
+import UserGuide from './components/UserGuide';
 
 function App() {
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+
   return (
     <div className="app-container">
-      <Header />
+      <Header onOpenGuide={() => setIsGuideOpen(true)} />
       <main style={{ flexGrow: 1 }}>
-        <DecisionDashboard />
+        <DecisionDashboard onOpenGuide={() => setIsGuideOpen(true)} />
       </main>
+      <UserGuide isOpen={isGuideOpen} onClose={() => setIsGuideOpen(false)} />
       <footer className="app-footer">
         <div className="footer-content">
           <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'white' }}>FreshGuard AI</h3>

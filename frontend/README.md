@@ -1,16 +1,24 @@
-# React + Vite
+# 🌿 FreshGuard AI — Frontend Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Giao diện Web Hệ Thống Hỗ Trợ Ra Quyết Định Nhập Hàng Tươi Sống (DSS) xây dựng bằng **React + Vite**.
 
-Currently, two official plugins are available:
+## 🚀 Tính Năng Chính
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Bảng Tổng Quan Tồn Kho Thực Tế:** Giám sát trạng thái tồn kho các mặt hàng tươi sống (Thịt ba rọi, Đùi heo, Cá điêu hồng, Tôm thẻ, Trứng gà) bằng hệ thống đèn cảnh báo Đỏ - Vàng - Xanh.
+- **Đề Xuất Nhập Hàng Tự Động (Q):** Tính toán lượng đặt hàng tối ưu kết hợp mô hình AI Prophet và các chỉ số quản trị tồn kho ($SS, ROP, Q$).
+- **Hộp Giải Thích AI Minh Bạch (Explainability):** Diễn giải lý do đề xuất tăng/giảm số lượng dựa trên lịch Âm/Dương, thời tiết và khuyến mãi.
+- **Bộ Mô Phỏng & Tùy Biến Tham Số:** Cho phép kéo trượt điều chỉnh nhu cầu $D$, biến động $\sigma_d$, Lead time $L$, Hệ số an toàn $Z$ và Tồn kho thực tế $I_{current}$ theo thời gian thực.
+- **Hộp Thoại Hướng Dẫn Sử Dụng Trực Tuyến (Interactive User Guide):** Hướng dẫn 4 bước thao tác, ý nghĩa 4 phân vùng, bảng tra cứu công thức và câu hỏi thường gặp.
 
-## React Compiler
+## 🛠️ Cài Đặt & Khởi Chạy
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Cài đặt thư viện
+npm install
 
-## Expanding the Oxlint configuration
+# Chạy môi trường phát triển (Dev)
+npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+# Đóng gói sản phẩm (Production Build)
+npm run build
+```

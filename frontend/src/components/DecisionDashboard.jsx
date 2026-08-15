@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle, Check, Edit3, HeartPulse, Settings } from 'lucide-react';
+import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle, Check, Edit3, HeartPulse, Settings, BookOpen } from 'lucide-react';
 import { initialProducts, calculateInventory } from '../data/products';
 
-export default function DecisionDashboard() {
+export default function DecisionDashboard({ onOpenGuide }) {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -145,10 +145,42 @@ export default function DecisionDashboard() {
 
   return (
     <section className="section" id="demo" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)', padding: '4rem 1.5rem' }}>
-      <div className="section-header">
+      <div className="section-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <span className="section-num">Trải nghiệm</span>
         <h2 className="section-title">Hệ Thống Ra Quyết Định Nhập Hàng DSS</h2>
         <div className="section-divider"></div>
+        {onOpenGuide && (
+          <button
+            onClick={onOpenGuide}
+            style={{
+              marginTop: '0.75rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'white',
+              color: 'var(--primary)',
+              border: '1px solid var(--border)',
+              padding: '6px 16px',
+              borderRadius: '20px',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              cursor: 'pointer',
+              boxShadow: 'var(--shadow-sm)',
+              transition: 'var(--transition)'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderColor = 'var(--primary)';
+              e.currentTarget.style.background = 'var(--bg-secondary)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.background = 'white';
+            }}
+          >
+            <BookOpen size={16} />
+            <span>Xem Hướng Dẫn Vận Hành 4 Bước & Công Thức</span>
+          </button>
+        )}
       </div>
 
       <div className="dashboard-grid">
