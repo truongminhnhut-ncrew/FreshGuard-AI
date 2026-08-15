@@ -192,19 +192,26 @@ export default function DecisionDashboard({ onOpenGuide }) {
 
         {/* Khu vực 1 — Bảng tổng quan (Overview Panel) */}
         <div className="dashboard-sidebar">
-          <h3 style={{ fontSize: '0.98rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
-            <Package size={18} style={{ flexShrink: 0 }} /> BẢNG TỔNG QUAN TỒN KHO
-          </h3>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
-            Giám sát danh sách mặt hàng tươi sống theo trạng thái tồn kho thực tế.
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', margin: 0 }}>
+              <Package size={16} style={{ flexShrink: 0 }} /> BẢNG TỔNG QUAN TỒN KHO
+            </h3>
+            <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: '99px', padding: '2px 8px', fontWeight: 700 }}>
+              {products.length} mặt hàng
+            </span>
+          </div>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', margin: 0 }}>
+            Cuộn để xem toàn bộ danh sách. Nhấn chọn mặt hàng để phân tích.
           </p>
 
-          <div className="product-selector" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {/* Scrollable Product Box */}
+          <div className="product-scroll-box">
             {products.map(prod => {
               const statusColor = getOverviewColor(prod);
               const statusText = getOverviewStatusText(prod);
 
-              let dotColor = '#10b981'; // green
+              let dotColor = '#10b981';
               if (statusColor === 'red') dotColor = '#ef4444';
               else if (statusColor === 'yellow') dotColor = '#f59e0b';
               else if (statusColor === 'orange') dotColor = '#f97316';
@@ -216,27 +223,25 @@ export default function DecisionDashboard({ onOpenGuide }) {
                   onClick={() => selectProduct(prod)}
                   style={{
                     position: 'relative',
-                    paddingLeft: '1.5rem',
-                    borderLeft: selectedProduct && selectedProduct.id === prod.id ? '4px solid var(--primary)' : '1px solid var(--border)',
+                    paddingLeft: '1.4rem',
+                    borderLeft: selectedProduct && selectedProduct.id === prod.id ? '3px solid var(--primary)' : '1px solid var(--border)',
                   }}
                 >
-                  {/* Color Status Dot */}
+                  {/* Status dot */}
                   <span style={{
-                    position: 'absolute', left: '8px', top: '20px',
-                    width: '10px', height: '10px', borderRadius: '50%',
-                    background: dotColor, boxShadow: `0 0 6px ${dotColor}`
+                    position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)',
+                    width: '8px', height: '8px', borderRadius: '50%',
+                    background: dotColor, boxShadow: `0 0 5px ${dotColor}`,
+                    flexShrink: 0,
                   }} />
 
-                  <div style={{ fontSize: '0.88rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                    <span style={{ fontSize: '1.05rem' }}>{prod.emoji}</span>
-                    <span>{prod.name}</span>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem', lineHeight: 1.3 }}>
+                    <span>{prod.emoji}</span>
+                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{prod.name}</span>
                   </div>
-                  <div style={{ fontSize: '0.72rem', marginTop: '0.2rem', marginBottom: '0.15rem' }}>
-                    <span style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: '4px', padding: '1px 6px', color: 'var(--text-secondary)', fontWeight: 600 }}>{prod.category}</span>
-                  </div>
-                  <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: '0.1rem', display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: dotColor, fontWeight: 600 }}>{statusText}</span>
-                    <strong>Tồn: {prod.I_current} {prod.unit}</strong>
+                  <div style={{ fontSize: '0.7rem', marginTop: '0.15rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ color: dotColor, fontWeight: 600, whiteSpace: 'nowrap' }}>{statusText}</span>
+                    <span style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Tồn: <strong>{prod.I_current}</strong> {prod.unit}</span>
                   </div>
                 </div>
               );
