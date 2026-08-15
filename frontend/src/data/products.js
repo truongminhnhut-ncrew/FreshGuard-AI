@@ -7,6 +7,7 @@ export const initialProducts = [
     category: 'Thịt', emoji: '🥓',
     unit: 'khay',
     D: 150, sigma_d: 25, L: 1, Z: 2.05, I_current: 110,
+    in_transit: 11,
     cost_price: 28000, selling_price: 41000,
   },
   {
@@ -15,6 +16,7 @@ export const initialProducts = [
     category: 'Thịt', emoji: '🍖',
     unit: 'khay',
     D: 120, sigma_d: 18, L: 1, Z: 1.65, I_current: 85,
+    in_transit: 15,
     cost_price: 30000, selling_price: 43600,
   },
   {
@@ -23,6 +25,7 @@ export const initialProducts = [
     category: 'Thịt', emoji: '🍖',
     unit: 'khay',
     D: 100, sigma_d: 20, L: 1, Z: 1.65, I_current: 60,
+    in_transit: 10,
     cost_price: 32000, selling_price: 46000,
   },
   // ── THỊT BÒ & GÀ ─────────────────────────────────
@@ -32,6 +35,7 @@ export const initialProducts = [
     category: 'Thịt', emoji: '🥩',
     unit: 'khay',
     D: 60, sigma_d: 15, L: 1, Z: 2.05, I_current: 30,
+    in_transit: 5,
     cost_price: 120000, selling_price: 169000,
   },
   {
@@ -40,6 +44,7 @@ export const initialProducts = [
     category: 'Thịt', emoji: '🍗',
     unit: 'khay',
     D: 130, sigma_d: 22, L: 1, Z: 1.65, I_current: 95,
+    in_transit: 18,
     cost_price: 25000, selling_price: 36000,
   },
   // ── CÁ TƯƠI ──────────────────────────────────────
@@ -49,6 +54,7 @@ export const initialProducts = [
     category: 'Cá', emoji: '🐠',
     unit: 'con',
     D: 65, sigma_d: 12, L: 2, Z: 1.65, I_current: 40,
+    in_transit: 8,
     cost_price: 30000, selling_price: 43000,
   },
   {
@@ -57,6 +63,7 @@ export const initialProducts = [
     category: 'Cá', emoji: '🐟',
     unit: 'khay',
     D: 55, sigma_d: 10, L: 2, Z: 1.65, I_current: 25,
+    in_transit: 6,
     cost_price: 38000, selling_price: 55000,
   },
   {
@@ -65,6 +72,7 @@ export const initialProducts = [
     category: 'Cá', emoji: '🐟',
     unit: 'khay',
     D: 45, sigma_d: 8, L: 2, Z: 1.65, I_current: 35,
+    in_transit: 4,
     cost_price: 55000, selling_price: 79000,
   },
   // ── HẢI SẢN ──────────────────────────────────────
@@ -74,6 +82,7 @@ export const initialProducts = [
     category: 'Hải sản', emoji: '🦐',
     unit: 'khay',
     D: 80, sigma_d: 15, L: 2, Z: 2.05, I_current: 55,
+    in_transit: 12,
     cost_price: 23000, selling_price: 33000,
   },
   {
@@ -82,6 +91,7 @@ export const initialProducts = [
     category: 'Hải sản', emoji: '🦐',
     unit: 'khay',
     D: 50, sigma_d: 12, L: 2, Z: 2.05, I_current: 20,
+    in_transit: 7,
     cost_price: 65000, selling_price: 93000,
   },
   {
@@ -90,6 +100,7 @@ export const initialProducts = [
     category: 'Hải sản', emoji: '🦑',
     unit: 'khay',
     D: 40, sigma_d: 10, L: 2, Z: 1.65, I_current: 28,
+    in_transit: 5,
     cost_price: 45000, selling_price: 65000,
   },
   {
@@ -98,6 +109,7 @@ export const initialProducts = [
     category: 'Hải sản', emoji: '🦪',
     unit: 'túi',
     D: 35, sigma_d: 8, L: 2, Z: 1.65, I_current: 18,
+    in_transit: 10,
     cost_price: 22000, selling_price: 32000,
   },
   // ── TRỨNG ────────────────────────────────────────
@@ -107,6 +119,7 @@ export const initialProducts = [
     category: 'Trứng', emoji: '🥚',
     unit: 'hộp',
     D: 210, sigma_d: 30, L: 3, Z: 2.33, I_current: 310,
+    in_transit: 30,
     cost_price: 18000, selling_price: 26000,
   },
   // ── RAU CỦ ────────────────────────────────────────
@@ -116,6 +129,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🥬',
     unit: 'bó',
     D: 80, sigma_d: 20, L: 1, Z: 1.28, I_current: 55,
+    in_transit: 15,
     cost_price: 5000, selling_price: 8000,
   },
   {
@@ -124,6 +138,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🥬',
     unit: 'bó',
     D: 70, sigma_d: 18, L: 1, Z: 1.28, I_current: 48,
+    in_transit: 12,
     cost_price: 5500, selling_price: 8500,
   },
   {
@@ -132,6 +147,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🍅',
     unit: 'túi',
     D: 90, sigma_d: 22, L: 1, Z: 1.28, I_current: 70,
+    in_transit: 18,
     cost_price: 12000, selling_price: 18000,
   },
   {
@@ -140,6 +156,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🥒',
     unit: 'túi',
     D: 75, sigma_d: 18, L: 1, Z: 1.28, I_current: 55,
+    in_transit: 14,
     cost_price: 10000, selling_price: 15000,
   },
   {
@@ -148,6 +165,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🥗',
     unit: 'bó',
     D: 40, sigma_d: 12, L: 1, Z: 1.28, I_current: 15,
+    in_transit: 8,
     cost_price: 8000, selling_price: 12000,
   },
   {
@@ -156,6 +174,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🥕',
     unit: 'túi',
     D: 60, sigma_d: 15, L: 1, Z: 1.28, I_current: 45,
+    in_transit: 10,
     cost_price: 9000, selling_price: 14000,
   },
   {
@@ -164,6 +183,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🥔',
     unit: 'túi',
     D: 85, sigma_d: 20, L: 1, Z: 1.28, I_current: 62,
+    in_transit: 12,
     cost_price: 18000, selling_price: 26000,
   },
   {
@@ -172,6 +192,7 @@ export const initialProducts = [
     category: 'Rau củ', emoji: '🌿',
     unit: 'bó',
     D: 50, sigma_d: 15, L: 1, Z: 1.28, I_current: 38,
+    in_transit: 5,
     cost_price: 4000, selling_price: 6500,
   },
 ];
@@ -183,6 +204,9 @@ export const calculateInventory = (D, sigma_d, L, Z, I_current) => {
   
   // ROP = (D * L) + SS
   const ROP = Math.round((D * L) + SS);
+
+  // Target Stock = ROP + (D * 0.5)
+  const targetStock = Math.round(ROP + (D * 0.5));
   
   // Q = (D + SS) - I_current
   let Q = Math.round((D + SS) - I_current);
@@ -206,7 +230,7 @@ export const calculateInventory = (D, sigma_d, L, Z, I_current) => {
     statusColor = 'green';
   }
 
-  return { SS, ROP, Q, status, statusText, statusColor };
+  return { SS, ROP, targetStock, Q, status, statusText, statusColor };
 };
 
 // Generate simulated Prophet forecast data locally

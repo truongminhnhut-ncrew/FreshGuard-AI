@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle, Check, Edit3, HeartPulse, Settings, BookOpen, ChevronUp, ChevronDown } from 'lucide-react';
+import { Package, ShieldCheck, AlertTriangle, ArrowRight, RefreshCw, HelpCircle, Check, Edit3, HeartPulse, Settings, BookOpen } from 'lucide-react';
 import { initialProducts, calculateInventory } from '../data/products';
 
 export default function DecisionDashboard({ onOpenGuide }) {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [carouselIndex, setCarouselIndex] = useState(0);
 
   // Editable parameters for active product
   const [D, setD] = useState(0);
@@ -29,6 +28,7 @@ export default function DecisionDashboard({ onOpenGuide }) {
   const [results, setResults] = useState({
     SS: 0,
     ROP: 0,
+    targetStock: 0,
     Q: 0,
     status: 'NORMAL',
     statusText: 'Ổn định',
@@ -116,18 +116,28 @@ export default function DecisionDashboard({ onOpenGuide }) {
     );
   }
 
-  // Get status color for overview panel dots
-  const getOverviewColor = (prod) => {
+  // Get status details for overview panel items
+  const getOverviewStatus = (prod) => {
     const res = calculateInventory(prod.D, prod.sigma_d, prod.L, prod.Z, prod.I_current);
-    if (res.status === 'REORDER_NOW') return 'red';
-    if (res.status === 'REORDER_SOON') return 'yellow';
-    if (res.status === 'OVERSTOCK') return 'orange';
-    return 'green';
-  };
-
-  const getOverviewStatusText = (prod) => {
-    const res = calculateInventory(prod.D, prod.sigma_d, prod.L, prod.Z, prod.I_current);
-    return res.statusText;
+    if (res.status === 'REORDER_NOW') {
+      return {
+        dotColor: '#ef4444',
+        textColor: '#ef4444',
+        text: 'Cần nhập gấp',
+      };
+    }
+    if (res.status === 'REORDER_SOON') {
+      return {
+        dotColor: '#f59e0b',
+        textColor: '#d97706',
+        text: 'Cân nhắc nhập',
+      };
+    }
+    return {
+      dotColor: '#10b981',
+      textColor: '#16a34a',
+      text: 'Chưa cần nhập',
+    };
   };
 
   // Get explainability text (Region 3)
@@ -195,177 +205,70 @@ export default function DecisionDashboard({ onOpenGuide }) {
         <div className="dashboard-sidebar">
 
           {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
             <h3 style={{ fontSize: '0.95rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', margin: 0 }}>
               <Package size={16} style={{ flexShrink: 0 }} /> BẢNG TỔNG QUAN TỒN KHO
             </h3>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: '99px', padding: '2px 8px', fontWeight: 700 }}>
-              {carouselIndex + 1} / {products.length}
+              {products.length} mặt hàng
             </span>
           </div>
 
-          {/* Carousel Card */}
-          {products.length > 0 && (() => {
-            const prod = products[carouselIndex];
-            const statusColor = getOverviewColor(prod);
-            const statusText = getOverviewStatusText(prod);
-            let dotColor = '#10b981';
-            if (statusColor === 'red') dotColor = '#ef4444';
-            else if (statusColor === 'yellow') dotColor = '#f59e0b';
-            else if (statusColor === 'orange') dotColor = '#f97316';
-            const { SS, ROP, Q } = calculateInventory(prod.D, prod.sigma_d, prod.L, prod.Z, prod.I_current);
-            const isSelected = selectedProduct && selectedProduct.id === prod.id;
+          {/* Scrollable Inventory List with custom scrollbar */}
+          <div className="inventory-overview-list">
+            {products.map((prod) => {
+              const statusInfo = getOverviewStatus(prod);
+              const isSelected = selectedProduct && selectedProduct.id === prod.id;
+              const displayName = prod.name.split(' (')[0];
 
-            return (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-
-                {/* Up button */}
-                <button
-                  onClick={() => {
-                    const idx = (carouselIndex - 1 + products.length) % products.length;
-                    setCarouselIndex(idx);
-                    selectProduct(products[idx]);
-                  }}
-                  style={{
-                    width: '100%', padding: '0.4rem', border: '1px solid var(--border)',
-                    borderRadius: '8px', background: 'var(--bg-secondary)', cursor: 'pointer',
-                    display: 'flex', justifyContent: 'center', alignItems: 'center',
-                    color: 'var(--text-secondary)', transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.color = 'var(--primary)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                >
-                  <ChevronUp size={18} />
-                </button>
-
-                {/* Product Card */}
+              return (
                 <div
-                  onClick={() => { selectProduct(prod); }}
-                  style={{
-                    border: `2px solid ${isSelected ? 'var(--primary)' : dotColor + '55'}`,
-                    borderRadius: '12px',
-                    padding: '1.25rem',
-                    background: isSelected ? 'var(--primary-light)' : 'white',
-                    cursor: 'pointer',
-                    transition: 'all 0.25s',
-                    boxShadow: `0 4px 16px ${dotColor}22`,
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
+                  key={prod.id}
+                  onClick={() => selectProduct(prod)}
+                  className={`inventory-overview-card ${isSelected ? 'active' : ''}`}
+                  title={`${prod.name} - Tồn kho: ${prod.I_current} ${prod.unit}`}
                 >
-                  {/* Color accent bar */}
-                  <div style={{
-                    position: 'absolute', top: 0, left: 0, right: 0,
-                    height: '4px', background: dotColor, borderRadius: '12px 12px 0 0'
-                  }} />
+                  <div className="inventory-card-icon-wrap">
+                    <span>{prod.emoji}</span>
+                  </div>
 
-                  {/* Emoji + Name */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginTop: '0.25rem' }}>
-                    <span style={{ fontSize: '2rem', lineHeight: 1 }}>{prod.emoji}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '0.9rem', fontWeight: 800, lineHeight: 1.3, color: 'var(--text-primary)' }}>{prod.name}</div>
-                      <div style={{ marginTop: '0.3rem' }}>
-                        <span style={{
-                          fontSize: '0.68rem', fontWeight: 700, padding: '2px 8px',
-                          borderRadius: '99px', background: dotColor + '22', color: dotColor,
-                          border: `1px solid ${dotColor}44`
-                        }}>● {statusText}</span>
-                      </div>
+                  <div className="inventory-card-info">
+                    <div className="inventory-card-title">
+                      {displayName}
+                    </div>
+
+                    <div className="inventory-card-sub">
+                      <span
+                        className="inventory-status-dot"
+                        style={{ background: statusInfo.dotColor }}
+                      />
+                      <span style={{ color: statusInfo.textColor, fontWeight: 700 }}>
+                        {statusInfo.text}
+                      </span>
+                      <span style={{ color: '#94a3b8' }}>·</span>
+                      <span style={{ color: '#64748b', fontWeight: 500 }}>
+                        Tồn: {prod.I_current}
+                      </span>
                     </div>
                   </div>
-
-                  {/* Stats grid */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '1rem' }}>
-                    {[
-                      { label: 'Tồn kho', value: `${prod.I_current} ${prod.unit}`, highlight: true },
-                      { label: 'Đề xuất nhập Q', value: `${Q} ${prod.unit}`, highlight: Q > 0 },
-                      { label: 'ROP', value: ROP },
-                      { label: 'SS (an toàn)', value: SS },
-                    ].map(({ label, value, highlight }) => (
-                      <div key={label} style={{
-                        background: highlight ? dotColor + '11' : 'var(--bg-secondary)',
-                        border: `1px solid ${highlight ? dotColor + '33' : 'var(--border)'}`,
-                        borderRadius: '8px', padding: '0.5rem 0.6rem'
-                      }}>
-                        <div style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 800, color: highlight ? dotColor : 'var(--text-primary)', marginTop: '0.1rem' }}>{value}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Phân tích button */}
-                  <button
-                    onClick={e => { e.stopPropagation(); selectProduct(prod); }}
-                    style={{
-                      marginTop: '0.85rem', width: '100%', padding: '0.5rem',
-                      background: isSelected ? 'var(--primary)' : 'white',
-                      color: isSelected ? 'white' : 'var(--primary)',
-                      border: '1.5px solid var(--primary)', borderRadius: '8px',
-                      fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {isSelected ? '✓ Đang phân tích' : '→ Chọn để phân tích'}
-                  </button>
                 </div>
-
-                {/* Down button */}
-                <button
-                  onClick={() => {
-                    const idx = (carouselIndex + 1) % products.length;
-                    setCarouselIndex(idx);
-                    selectProduct(products[idx]);
-                  }}
-                  style={{
-                    width: '100%', padding: '0.4rem', border: '1px solid var(--border)',
-                    borderRadius: '8px', background: 'var(--bg-secondary)', cursor: 'pointer',
-                    display: 'flex', justifyContent: 'center', alignItems: 'center',
-                    color: 'var(--text-secondary)', transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary-light)'; e.currentTarget.style.color = 'var(--primary)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                >
-                  <ChevronDown size={18} />
-                </button>
-
-                {/* Dot progress indicator */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', flexWrap: 'wrap', padding: '0 0.5rem' }}>
-                  {products.map((p, i) => {
-                    const sc = getOverviewColor(p);
-                    let dc = '#10b981';
-                    if (sc === 'red') dc = '#ef4444';
-                    else if (sc === 'yellow') dc = '#f59e0b';
-                    return (
-                      <button
-                        key={p.id}
-                        onClick={() => { setCarouselIndex(i); selectProduct(products[i]); }}
-                        title={p.name}
-                        style={{
-                          width: i === carouselIndex ? '20px' : '8px',
-                          height: '8px',
-                          borderRadius: '99px',
-                          background: i === carouselIndex ? dc : dc + '44',
-                          border: 'none', cursor: 'pointer',
-                          transition: 'all 0.25s', padding: 0,
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-
-              </div>
-            );
-          })()}
+              );
+            })}
+          </div>
 
           {/* Color Legend */}
           <div style={{
-            padding: '0.75rem', background: 'var(--bg-secondary)',
-            borderRadius: '8px', border: '1px solid var(--border)', fontSize: '0.72rem'
+            marginTop: '0.25rem',
+            padding: '0.75rem',
+            background: 'var(--bg-secondary)',
+            borderRadius: '12px',
+            border: '1px solid var(--border)',
+            fontSize: '0.72rem'
           }}>
             <div style={{ fontWeight: 700, marginBottom: '0.4rem', color: 'var(--text-primary)' }}>Chú giải trạng thái:</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
               {[
-                { color: '#ef4444', label: 'Đỏ: Cần nhập gấp' },
+                { color: '#ef4444', label: 'Đỏ: Cần nhập gấp (Tồn < ROP)' },
                 { color: '#f59e0b', label: 'Vàng: Cân nhắc nhập' },
                 { color: '#10b981', label: 'Xanh: Chưa cần nhập' },
               ].map(({ color, label }) => (
@@ -382,7 +285,7 @@ export default function DecisionDashboard({ onOpenGuide }) {
         {selectedProduct && (
           <div className="dashboard-main">
             {/* Header + Model Health Widget (Khu vực 4) */}
-            <div className="db-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div className="db-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <div className="db-title" style={{ fontSize: '1.4rem', fontWeight: 800 }}>{selectedProduct.name}</div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -431,6 +334,26 @@ export default function DecisionDashboard({ onOpenGuide }) {
                 >
                   <RefreshCw size={14} className={modelStatus === 'RETRAINING' ? 'spin-icon' : ''} />
                 </button>
+              </div>
+            </div>
+
+            {/* Thanh Chỉ Số Nhanh (ROP, Target Stock, SS, Đang đi đường) */}
+            <div className="product-quick-metrics">
+              <div className="quick-metric-card">
+                <div className="quick-metric-label">ROP</div>
+                <div className="quick-metric-value">{results.ROP}</div>
+              </div>
+              <div className="quick-metric-card">
+                <div className="quick-metric-label">Target Stock</div>
+                <div className="quick-metric-value">{results.targetStock || Math.round(results.ROP + (D * 0.5))}</div>
+              </div>
+              <div className="quick-metric-card">
+                <div className="quick-metric-label">SS</div>
+                <div className="quick-metric-value">{results.SS}</div>
+              </div>
+              <div className="quick-metric-card">
+                <div className="quick-metric-label">Đang đi đường</div>
+                <div className="quick-metric-value">{selectedProduct.in_transit ?? Math.round(D * 0.1)}</div>
               </div>
             </div>
 
