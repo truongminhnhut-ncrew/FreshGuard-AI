@@ -10,6 +10,9 @@
   # The build command to run inside the base directory
   command = "npm run build"
 
+[build.environment]
+  NODE_VERSION = "20"
+
 # Redirect rules for Single Page Applications (SPA)
 # Redirects all traffic to index.html so React Router handles page routing
 [[redirects]]
