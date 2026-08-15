@@ -635,7 +635,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Simulator 3: Dashboard & Optimizer */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px 1fr;
   gap: 2rem;
   background: white;
   padding: 2rem;

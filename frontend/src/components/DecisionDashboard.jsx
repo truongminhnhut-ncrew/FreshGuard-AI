@@ -155,8 +155,8 @@ export default function DecisionDashboard() {
         
         {/* Khu vực 1 — Bảng tổng quan (Overview Panel) */}
         <div className="dashboard-sidebar">
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
-            <Package size={18} /> BẢNG TỔNG QUAN TỒN KHO
+          <h3 style={{ fontSize: '0.98rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
+            <Package size={18} style={{ flexShrink: 0 }} /> BẢNG TỔNG QUAN TỒN KHO
           </h3>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
             Giám sát danh sách mặt hàng tươi sống theo trạng thái tồn kho thực tế.
