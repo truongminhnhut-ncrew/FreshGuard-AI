@@ -50,11 +50,11 @@ export default function DecisionDashboard({ onOpenGuide }) {
     setL(prod.L);
     setZ(prod.Z);
     setIcurrent(prod.I_current);
-    
+
     // Reset states for the new product
     setIsAdjusting(false);
     setApproved(false);
-    
+
     // Set specific MAPE for each product
     if (prod.id === 'ba-roi-heo-cp') setMape('8.4%');
     else if (prod.id === 'dui-heo-cp') setMape('7.8%');
@@ -77,7 +77,7 @@ export default function DecisionDashboard({ onOpenGuide }) {
   const handleRetrain = () => {
     if (modelStatus === 'RETRAINING') return;
     setModelStatus('RETRAINING');
-    
+
     setTimeout(() => {
       setModelStatus('STABLE');
       // Slightly improve MAPE to show result of retraining
@@ -184,7 +184,7 @@ export default function DecisionDashboard({ onOpenGuide }) {
       </div>
 
       <div className="dashboard-grid">
-        
+
         {/* Khu vực 1 — Bảng tổng quan (Overview Panel) */}
         <div className="dashboard-sidebar">
           <h3 style={{ fontSize: '0.98rem', fontWeight: 800, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', whiteSpace: 'nowrap' }}>
@@ -193,20 +193,20 @@ export default function DecisionDashboard({ onOpenGuide }) {
           <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
             Giám sát danh sách mặt hàng tươi sống theo trạng thái tồn kho thực tế.
           </p>
-          
+
           <div className="product-selector" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {products.map(prod => {
               const statusColor = getOverviewColor(prod);
               const statusText = getOverviewStatusText(prod);
-              
+
               let dotColor = '#10b981'; // green
               if (statusColor === 'red') dotColor = '#ef4444';
               else if (statusColor === 'yellow') dotColor = '#f59e0b';
               else if (statusColor === 'orange') dotColor = '#f97316';
-              
+
               return (
-                <div 
-                  key={prod.id} 
+                <div
+                  key={prod.id}
                   className={`product-option ${selectedProduct && selectedProduct.id === prod.id ? 'active' : ''}`}
                   onClick={() => selectProduct(prod)}
                   style={{
@@ -221,7 +221,7 @@ export default function DecisionDashboard({ onOpenGuide }) {
                     width: '10px', height: '10px', borderRadius: '50%',
                     background: dotColor, boxShadow: `0 0 6px ${dotColor}`
                   }} />
-                  
+
                   <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{prod.name}</div>
                   <div style={{ fontSize: '0.75rem', opacity: 0.8, marginTop: '0.25rem', display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ color: dotColor, fontWeight: 600 }}>{statusText}</span>
@@ -241,15 +241,15 @@ export default function DecisionDashboard({ onOpenGuide }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
-                <span>Đỏ: Dưới ROP, cần nhập gấp</span>
+                <span>Đỏ: Cần nhập gấp</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#f59e0b' }} />
-                <span>Vàng: Cận ngưỡng tồn kho</span>
+                <span>Vàng: Cân nhắc nhập số lượng phù hợp</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }} />
-                <span>Xanh: Tồn kho an toàn</span>
+                <span>Xanh: Chưa cần nhập thêm</span>
               </div>
             </div>
           </div>
@@ -259,14 +259,14 @@ export default function DecisionDashboard({ onOpenGuide }) {
         {selectedProduct && (
           <div className="dashboard-main">
             {/* Header + Model Health Widget (Khu vực 4) */}
-            <div className="db-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+            <div className="db-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
               <div>
                 <div className="db-title" style={{ fontSize: '1.4rem', fontWeight: 800 }}>{selectedProduct.name}</div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                   Nhóm hàng: <strong>{selectedProduct.category}</strong> | Đơn vị tính: <strong>{selectedProduct.unit}</strong>
                 </div>
               </div>
-              
+
               {/* KHU VỰC 4: Chỉ số giám sát mô hình (Model Health Widget) */}
               <div style={{
                 background: 'white', padding: '1rem 1.25rem', borderRadius: '12px',
@@ -295,7 +295,7 @@ export default function DecisionDashboard({ onOpenGuide }) {
                     <strong style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>{mape}</strong>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={handleRetrain}
                   disabled={modelStatus === 'RETRAINING'}
                   style={{
@@ -311,258 +311,176 @@ export default function DecisionDashboard({ onOpenGuide }) {
               </div>
             </div>
 
-            {/* Dashboard Workspace Grid (2 Columns) */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+            {/* Main Action Grid: Direct Inventory Input & Order Recommendation */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
               
-              {/* Left Column: Region 2 + Region 3 + Parameter tuning */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                
-                {/* KHU VỰC 2: Đề xuất nhập hàng (Order Recommendation Card) */}
-                <div className="card" style={{
-                  borderLeft: '5px solid var(--primary)', background: 'white', position: 'relative',
-                  padding: '1.5rem'
-                }}>
-                  <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.75rem' }}>
-                    ĐỀ XUẤT NHẬP HÀNG (ORDER RECOMMENDATION)
-                  </h4>
-                  
-                  {approved ? (
-                    <div style={{
-                      background: 'var(--primary-light)', color: 'var(--primary-hover)',
-                      padding: '1rem', borderRadius: '8px', fontWeight: 600, fontSize: '0.9rem',
-                      display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0.5rem 0'
+              {/* KHU VỰC 1: ĐIỀN TỒN KHO THỰC TẾ (Thay vì kéo thanh trượt) */}
+              <div className="card" style={{
+                background: 'white', padding: '1.75rem', borderRadius: '12px',
+                border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+              }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+                      Tồn kho thực tế hiện tại (I<sub>current</sub>)
+                    </h4>
+                    <span style={{
+                      fontSize: '0.75rem', fontWeight: 700, padding: '4px 10px', borderRadius: '20px',
+                      background: results.statusColor === 'red' ? '#fee2e2' : (results.statusColor === 'yellow' ? '#fef3c7' : '#dcfce7'),
+                      color: results.statusColor === 'red' ? '#dc2626' : (results.statusColor === 'yellow' ? '#d97706' : '#16a34a'),
+                      border: `1px solid ${results.statusColor === 'red' ? '#fca5a5' : (results.statusColor === 'yellow' ? '#fde68a' : '#86efac')}`
                     }}>
-                      <Check size={18} strokeWidth={3} />
-                      Đã phê duyệt lượng nhập Q = {approvedQuantity} {selectedProduct.unit} gửi lên ERP thành công!
-                    </div>
-                  ) : (
+                      ● {results.statusText}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                    Điền số lượng thực tế kiểm kê tại quầy để hệ thống tự động tính toán lại lượng hàng cần nhập ngay lập tức.
+                  </p>
+                </div>
+
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  background: 'var(--bg-secondary)', padding: '1rem 1.25rem', borderRadius: '10px',
+                  border: '1px solid var(--border)', flexWrap: 'wrap', gap: '0.75rem'
+                }}>
+                  <label style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Nhập số tồn kho:
+                  </label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <input
+                      type="number"
+                      min="0"
+                      className="db-param-input"
+                      value={Icurrent}
+                      onChange={e => setIcurrent(Math.max(0, parseInt(e.target.value) || 0))}
+                      placeholder="0"
+                      style={{
+                        width: '120px',
+                        padding: '0.5rem 0.75rem',
+                        fontSize: '1.4rem',
+                        fontWeight: 800,
+                        textAlign: 'center',
+                        color: results.statusColor === 'red' ? '#ef4444' : 'var(--primary)',
+                        background: 'white',
+                        borderRadius: '8px',
+                        border: `2px solid ${results.statusColor === 'red' ? '#ef4444' : 'var(--primary)'}`
+                      }}
+                    />
+                    <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--text-secondary)' }}>
+                      {selectedProduct.unit}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* KHU VỰC 2: ĐỀ XUẤT NHẬP HÀNG (Order Recommendation Card) */}
+              <div className="card" style={{
+                borderLeft: '5px solid var(--primary)', background: 'white', position: 'relative',
+                padding: '1.75rem', borderRadius: '12px', boxShadow: 'var(--shadow-sm)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+              }}>
+                <div>
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+                    Đề xuất nhập hàng (Order Recommendation)
+                  </h4>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                    Khối lượng khuyến nghị do AI tính toán để tối ưu doanh thu và hạn chế tối đa hủy hàng.
+                  </p>
+                </div>
+
+                {approved ? (
+                  <div style={{
+                    background: 'var(--primary-light)', color: 'var(--primary-hover)',
+                    padding: '1.25rem', borderRadius: '10px', fontWeight: 700, fontSize: '0.95rem',
+                    display: 'flex', alignItems: 'center', gap: '0.6rem'
+                  }}>
+                    <Check size={20} strokeWidth={3} />
+                    Đã phê duyệt lượng nhập Q = {approvedQuantity} {selectedProduct.unit} gửi lên ERP thành công!
+                  </div>
+                ) : (
+                  <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                       <div>
                         <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Lượng đề xuất (Q):</div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem', marginTop: '0.25rem' }}>
-                          <span style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                          <span style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                             {isAdjusting ? customQuantity : results.Q}
                           </span>
-                          <span style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+                          <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
                             {selectedProduct.unit}
                           </span>
                         </div>
                       </div>
-                      
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button 
+
+                      <div style={{ display: 'flex', gap: '0.6rem' }}>
+                        <button
                           onClick={handleApprove}
                           style={{
                             background: 'var(--primary)', color: 'white', border: 'none',
-                            padding: '0.6rem 1.25rem', borderRadius: '30px', fontWeight: 700,
-                            fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem'
+                            padding: '0.7rem 1.4rem', borderRadius: '30px', fontWeight: 700,
+                            fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem',
+                            boxShadow: '0 4px 12px rgba(0, 139, 69, 0.25)'
                           }}
                         >
-                          <Check size={16} /> Phê duyệt
+                          <Check size={18} /> Phê duyệt
                         </button>
-                        <button 
+                        <button
                           onClick={() => setIsAdjusting(!isAdjusting)}
                           style={{
                             background: isAdjusting ? 'var(--primary-light)' : 'white',
                             color: isAdjusting ? 'var(--primary)' : 'var(--text-secondary)',
                             border: '1px solid var(--border)',
-                            padding: '0.6rem 1.25rem', borderRadius: '30px', fontWeight: 700,
-                            fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem'
+                            padding: '0.7rem 1.4rem', borderRadius: '30px', fontWeight: 700,
+                            fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem'
                           }}
                         >
-                          <Edit3 size={14} /> {isAdjusting ? 'Hủy chỉnh' : 'Điều chỉnh'}
+                          <Edit3 size={16} /> {isAdjusting ? 'Hủy chỉnh' : 'Điều chỉnh'}
                         </button>
                       </div>
                     </div>
-                  )}
 
-                  {/* Manual adjustment input */}
-                  {isAdjusting && !approved && (
-                    <div style={{
-                      marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px dashed var(--border)',
-                      display: 'flex', alignItems: 'center', gap: '1rem'
-                    }}>
-                      <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-                        Nhập thủ công lượng hàng:
-                      </label>
-                      <input 
-                        type="number"
-                        className="db-param-input"
-                        value={customQuantity}
-                        onChange={e => setCustomQuantity(Math.max(0, parseInt(e.target.value) || 0))}
-                        style={{ maxWidth: '120px', padding: '0.4rem' }}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* KHU VỰC 3: Giải thích lý do (Explainability Box) */}
-                <div className="card" style={{
-                  background: '#fafdfb', border: '1px solid var(--border)',
-                  padding: '1.25rem 1.5rem'
-                }}>
-                  <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <HelpCircle size={16} /> GIẢI THÍCH LÝ DO (EXPLAINABILITY)
-                  </h4>
-                  <p style={{
-                    fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: '1.5',
-                    fontStyle: 'italic', fontWeight: 500
-                  }}>
-                    "{getExplainabilityText()}"
-                  </p>
-                </div>
-
-                {/* Parameters adjustments */}
-                <div className="card" style={{ padding: '1.5rem' }}>
-                  <h4 style={{ fontSize: '0.9rem', fontWeight: 800, marginBottom: '1rem', color: 'var(--text-primary)' }}>
-                    Bộ điều chỉnh tham số nhu cầu & an toàn
-                  </h4>
-                  <div className="db-params-grid" style={{ gap: '1rem' }}>
-                    <div className="db-param-card" style={{ padding: '0.75rem 1rem' }}>
-                      <span className="db-param-label" style={{ fontSize: '0.75rem' }}>Nhu cầu TB (D)</span>
-                      <input type="number" className="db-param-input" value={D} onChange={e => setD(Math.max(0, parseInt(e.target.value) || 0))} />
-                    </div>
-
-                    <div className="db-param-card" style={{ padding: '0.75rem 1rem' }}>
-                      <span className="db-param-label" style={{ fontSize: '0.75rem' }}>Biến động (σd)</span>
-                      <input type="number" className="db-param-input" value={sigmaD} onChange={e => setSigmaD(Math.max(0, parseInt(e.target.value) || 0))} />
-                    </div>
-
-                    <div className="db-param-card" style={{ padding: '0.75rem 1rem' }}>
-                      <span className="db-param-label" style={{ fontSize: '0.75rem' }}>Chờ hàng (L)</span>
-                      <input type="number" className="db-param-input" value={L} onChange={e => setL(Math.max(1, parseInt(e.target.value) || 1))} />
-                    </div>
-
-                    <div className="db-param-card" style={{ padding: '0.75rem 1rem' }}>
-                      <span className="db-param-label" style={{ fontSize: '0.75rem' }}>Hệ số an toàn (Z)</span>
-                      <select className="db-param-input" value={Z} onChange={e => setZ(parseFloat(e.target.value))} style={{ padding: '0.2rem 0.5rem' }}>
-                        <option value="1.28">90% (Z=1.28)</option>
-                        <option value="1.65">95% (Z=1.65)</option>
-                        <option value="2.05">98% (Z=2.05)</option>
-                        <option value="2.33">99% (Z=2.33)</option>
-                      </select>
-                    </div>
+                    {/* Manual adjustment input */}
+                    {isAdjusting && !approved && (
+                      <div style={{
+                        marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px dashed var(--border)',
+                        display: 'flex', alignItems: 'center', gap: '0.75rem'
+                      }}>
+                        <label style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                          Nhập thủ công lượng hàng:
+                        </label>
+                        <input
+                          type="number"
+                          className="db-param-input"
+                          value={customQuantity}
+                          onChange={e => setCustomQuantity(Math.max(0, parseInt(e.target.value) || 0))}
+                          style={{ maxWidth: '110px', padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 800 }}
+                        />
+                        <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                          {selectedProduct.unit}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                </div>
-
+                )}
               </div>
 
-              {/* Right Column: Visual stock level & indicators */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                
-                {/* Visual Stock Level progress bar */}
-                <div className="card" style={{ padding: '1.5rem', background: 'white' }}>
-                  <h5 style={{ fontSize: '0.9rem', fontWeight: 800, marginBottom: '1rem', color: 'var(--text-secondary)' }}>
-                    Trực quan hóa mức tồn kho thực tế
-                  </h5>
+            </div>
 
-                  <div style={{ position: 'relative', height: '24px', background: '#e2e8f0', borderRadius: '12px', margin: '2rem 0' }}>
-                    {/* Zone 1: Safety Stock (Red zone) */}
-                    <div style={{
-                      position: 'absolute', left: 0, top: 0, bottom: 0,
-                      width: `${Math.min(100, (results.SS / Math.max(1, D + results.SS)) * 60)}%`,
-                      background: '#ef4444',
-                      opacity: 0.3,
-                      borderRight: '2px dashed #ef4444',
-                      borderRadius: '12px 0 0 12px',
-                    }} />
-
-                    {/* Zone 2: Reorder Zone (Yellow zone between SS and ROP) */}
-                    <div style={{
-                      position: 'absolute', 
-                      left: `${Math.min(100, (results.SS / Math.max(1, D + results.SS)) * 60)}%`, 
-                      top: 0, bottom: 0,
-                      width: `${Math.max(0, Math.min(100, ((results.ROP - results.SS) / Math.max(1, D + results.SS)) * 60))}%`,
-                      background: '#f59e0b',
-                      opacity: 0.2,
-                      borderRight: '2px dashed #f59e0b',
-                    }} />
-
-                    {/* Zone 3: Target Zone Marker */}
-                    <div style={{
-                      position: 'absolute',
-                      left: `${Math.min(100, ((D + results.SS) / Math.max(1, D + results.SS)) * 60)}%`,
-                      top: 0, bottom: 0, width: '2px',
-                      background: 'var(--primary)', zIndex: 5
-                    }} />
-
-                    {/* Current Stock Pointer */}
-                    <div style={{
-                      position: 'absolute',
-                      left: `${Math.min(100, (Icurrent / Math.max(1, D + results.SS)) * 60)}%`,
-                      top: '50%', transform: 'translate(-50%, -50%)',
-                      width: '20px', height: '20px', borderRadius: '50%',
-                      background: results.statusColor === 'red' ? '#ef4444' : 'var(--primary)',
-                      border: '3px solid white', boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
-                      zIndex: 20, transition: 'left 0.3s ease'
-                    }} />
-                  </div>
-
-                  {/* Clean metrics grid below to display all details clearly and avoid overlaps */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                    gap: '1rem',
-                    marginTop: '1.5rem',
-                    borderTop: '1px solid var(--border)',
-                    paddingTop: '1rem'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: results.statusColor === 'red' ? '#ef4444' : 'var(--primary)' }} />
-                      <div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tồn thực tế:</div>
-                        <div style={{ fontSize: '0.95rem', fontWeight: 800 }}>{Icurrent} {selectedProduct.unit}</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f59e0b' }} />
-                      <div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Ngưỡng đặt lại (ROP):</div>
-                        <div style={{ fontSize: '0.95rem', fontWeight: 800 }}>{results.ROP} {selectedProduct.unit}</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ef4444', opacity: 0.6 }} />
-                      <div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Tồn an toàn (SS):</div>
-                        <div style={{ fontSize: '0.95rem', fontWeight: 800 }}>{results.SS} {selectedProduct.unit}</div>
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--primary)' }} />
-                      <div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Mức tồn mục tiêu:</div>
-                        <div style={{ fontSize: '0.95rem', fontWeight: 800 }}>{D + results.SS} {selectedProduct.unit}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Step 2 parameters indicator metrics */}
-                <div style={{
-                  padding: '1.25rem', borderRadius: '12px', border: '1px dashed var(--primary-light)',
-                  background: 'white'
-                }}>
-                  <div className="slider-label" style={{ marginBottom: '0.5rem' }}>
-                    <span>Tồn kho thực tế hiện tại (Icurrent):</span>
-                    <span className="slider-value" style={{ color: results.statusColor === 'red' ? '#ef4444' : 'var(--primary)' }}>
-                      {Icurrent} {selectedProduct.unit}
-                    </span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max={Math.max(D * 4, Icurrent * 1.5)} 
-                    value={Icurrent} 
-                    onChange={e => setIcurrent(parseInt(e.target.value) || 0)} 
-                  />
-                </div>
-
-              </div>
-
+            {/* KHU VỰC 3: GIẢI THÍCH LÝ DO (Explainability Box) */}
+            <div className="card" style={{
+              background: '#fafdfb', border: '1px solid var(--border)',
+              padding: '1.5rem 1.75rem', borderRadius: '12px', boxShadow: 'var(--shadow-sm)'
+            }}>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase' }}>
+                <HelpCircle size={18} /> Giải thích lý do (Explainability)
+              </h4>
+              <p style={{
+                fontSize: '0.98rem', color: 'var(--text-secondary)', lineHeight: '1.6',
+                fontStyle: 'italic', fontWeight: 500
+              }}>
+                "{getExplainabilityText()}"
+              </p>
             </div>
 
           </div>

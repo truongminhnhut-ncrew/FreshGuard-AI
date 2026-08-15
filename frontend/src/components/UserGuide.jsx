@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { 
-  BookOpen, CheckCircle2, AlertTriangle, ArrowRight, HelpCircle, 
+import {
+  BookOpen, CheckCircle2, AlertTriangle, ArrowRight, HelpCircle,
   Layers, Sliders, RefreshCw, Check, Edit3, ShieldAlert, Sparkles,
   Package, ChevronDown, ChevronUp, Info, Activity, Terminal
 } from 'lucide-react';
@@ -40,25 +40,25 @@ export default function UserGuide({ isOpen, onClose }) {
 
         {/* Tab Navigation */}
         <div className="guide-tabs-nav">
-          <button 
+          <button
             className={`guide-tab-btn ${activeTab === 'workflow' ? 'active' : ''}`}
             onClick={() => setActiveTab('workflow')}
           >
             <Sparkles size={16} /> 1. Quy Trình 4 Bước
           </button>
-          <button 
+          <button
             className={`guide-tab-btn ${activeTab === 'regions' ? 'active' : ''}`}
             onClick={() => setActiveTab('regions')}
           >
             <Layers size={16} /> 2. Ý Nghĩa 4 Phân Vùng
           </button>
-          <button 
+          <button
             className={`guide-tab-btn ${activeTab === 'formulas' ? 'active' : ''}`}
             onClick={() => setActiveTab('formulas')}
           >
             <Sliders size={16} /> 3. Công Thức & Tham Số
           </button>
-          <button 
+          <button
             className={`guide-tab-btn ${activeTab === 'faq' ? 'active' : ''}`}
             onClick={() => setActiveTab('faq')}
           >
@@ -97,11 +97,11 @@ export default function UserGuide({ isOpen, onClose }) {
                       </div>
                       <div className="guide-status-item">
                         <span className="dot dot-yellow"></span>
-                        <div><strong>Màu Vàng (Cận ngưỡng):</strong> Tồn kho đang tiệm cận ROP, cần theo dõi sát sức mua trong ngày.</div>
+                        <div><strong>Màu Vàng (Cân nhắc nhập số lượng phù hợp):</strong> Tồn kho đang cận ngưỡng, quản lý cân nhắc lượng nhập vừa đủ cho ngày mai.</div>
                       </div>
                       <div className="guide-status-item">
                         <span className="dot dot-green"></span>
-                        <div><strong>Màu Xanh (Ổn định):</strong> Tồn kho đang ở mức an toàn, không có nguy cơ đứt hàng.</div>
+                        <div><strong>Màu Xanh (Chưa cần nhập thêm):</strong> Tồn kho đang ở mức an toàn, không có nguy cơ đứt hàng.</div>
                       </div>
                     </div>
                   </div>
@@ -112,18 +112,15 @@ export default function UserGuide({ isOpen, onClose }) {
                   <div className="guide-step-num">2</div>
                   <div className="guide-step-content">
                     <div className="guide-step-title">
-                      <span>Bước 2: Xem xét đề xuất số lượng nhập (Q)</span>
-                      <span className="guide-tag green">Tự động tính toán</span>
+                      <span>Bước 2: Điền số lượng tồn kho thực tế & Xem đề xuất Q</span>
+                      <span className="guide-tag green">Điền số trực tiếp</span>
                     </div>
                     <p className="guide-step-desc">
-                      Tại <strong>Khu vực Đề Xuất Nhập Hàng</strong>, hệ thống tự động hiển thị số lượng nhập khuyến nghị $Q$ (kg hoặc hộp) dựa trên thuật toán:
+                      Tại ô <strong>"Nhập số tồn kho"</strong>, điền trực tiếp số lượng hàng thực tế kiểm kê tại quầy/kho. Hệ thống tự động tính toán ngay lượng đặt hàng tối ưu $Q$:
                     </p>
                     <div className="guide-code-box">
                       <code>Q = Max(0, Nhu cầu dự báo (D) + Tồn an toàn (SS) - Tồn thực tế (I_current))</code>
                     </div>
-                    <p className="guide-step-desc" style={{ marginTop: '0.5rem' }}>
-                      Quan sát thanh đo tồn kho trực quan bên phải để thấy vị trí chấm tròn (Tồn thực tế) so với vạch ROP và Tồn an toàn.
-                    </p>
                   </div>
                 </div>
 
@@ -132,20 +129,17 @@ export default function UserGuide({ isOpen, onClose }) {
                   <div className="guide-step-num">3</div>
                   <div className="guide-step-content">
                     <div className="guide-step-title">
-                      <span>Bước 3: Đọc giải thích AI (Explainability) & Tinh chỉnh kịch bản</span>
+                      <span>Bước 3: Đọc giải thích AI (Explainability)</span>
                       <span className="guide-tag blue">Minh bạch AI</span>
                     </div>
                     <p className="guide-step-desc">
-                      Đọc hộp <strong>"Giải thích lý do"</strong> để hiểu rõ các yếu tố ảnh hưởng:
+                      Đọc hộp <strong>"Giải thích lý do"</strong> để hiểu rõ các yếu tố ảnh hưởng đến đề xuất:
                     </p>
                     <ul className="guide-bullet-list">
                       <li><strong>Yếu tố thời tiết:</strong> Mưa bão làm giảm lượt khách ghé mua hải sản/thịt.</li>
                       <li><strong>Yếu tố lịch Âm / Lễ Tết:</strong> Mùng 1 Âm lịch, ngày Rằm làm tăng nhu cầu ăn chay hoặc thịt heo cúng.</li>
                       <li><strong>Chương trình khuyến mãi:</strong> Chiến dịch giảm giá cuối tuần kích cầu.</li>
                     </ul>
-                    <p className="guide-step-desc" style={{ marginTop: '0.5rem' }}>
-                      <em>(Tùy chọn)</em> Bạn có thể điều chỉnh tham số nhu cầu $D$, độ biến động $\sigma_d$, thời gian chờ hàng $L$ hoặc kéo thanh trượt $I_{current}$ để mô phỏng kịch bản thực tế phát sinh tại cửa hàng.
-                    </p>
                   </div>
                 </div>
 
@@ -197,7 +191,7 @@ export default function UserGuide({ isOpen, onClose }) {
                     <h4>Khu vực 1: Bảng tổng quan tồn kho</h4>
                   </div>
                   <p>
-                    Hiển thị danh sách toàn bộ mặt hàng tươi sống (Thịt ba rọi, Đùi heo, Cá điêu hồng, Tôm thẻ, Trứng gà). 
+                    Hiển thị danh sách toàn bộ mặt hàng tươi sống (Thịt ba rọi, Đùi heo, Cá điêu hồng, Tôm thẻ, Trứng gà).
                     Cung cấp cái nhìn tức thì về trạng thái kho thông qua hệ thống đèn giao thông (Đỏ - Vàng - Xanh).
                   </p>
                 </div>

@@ -27,23 +27,17 @@ flowchart LR
 
 #### 🔴 **Bước 1: Chọn sản phẩm & Kiểm tra cảnh báo tồn kho**
 - Tại **Bảng Tổng Quan Tồn Kho (Cột bên trái)**, danh sách các sản phẩm tươi sống được giám sát liên tục theo hệ thống đèn giao thông:
-  - 🔴 **Màu Đỏ (Cần nhập gấp):** Tồn kho thực tế đang dưới điểm đặt hàng lại ($I_{current} < ROP$).
-  - 🟡 **Màu Vàng (Cận ngưỡng):** Tồn kho đang tiệm cận ngưỡng $ROP$, cần theo dõi sát sức mua.
-  - 🟢 **Màu Xanh (Ổn định):** Tồn kho đang ở mức an toàn ($I_{current} \ge ROP$).
+  - 🔴 **Màu Đỏ (Cần nhập gấp):** Tồn kho thực tế đang dưới điểm đặt hàng lại ($I_{current} < ROP$). Phải xử lý đặt hàng ngay.
+  - 🟡 **Màu Vàng (Cân nhắc nhập số lượng phù hợp):** Tồn kho đang cận ngưỡng, quản lý cân nhắc lượng nhập vừa đủ cho ngày mai.
+  - 🟢 **Màu Xanh (Chưa cần nhập thêm):** Tồn kho đang ở mức an toàn ($I_{current} \ge ROP$).
 
-#### 📦 **Bước 2: Xem xét đề xuất số lượng nhập ($Q$)**
-- Tại **Khối Đề Xuất Nhập Hàng**, hệ thống tự động tính toán lượng đặt hàng khuyến nghị $Q$ dựa trên công thức quản trị tồn kho:
+#### 📦 **Bước 2: Điền số tồn kho thực tế ($I_{current}$) & Xem đề xuất ($Q$)**
+- Tại ô **Nhập số tồn kho**, Quản lý điền trực tiếp số lượng thực tế kiểm kê tại quầy/kho ($I_{current}$).
+- Hệ thống tự động tính toán lượng đặt hàng khuyến nghị $Q$ ngay lập tức:
   $$Q = \max(0, (D \times L) + SS - I_{current})$$
-- Quan sát **Thanh đo trực quan hóa mức tồn kho thực tế** bên phải để xem tương quan vị trí giữa mức tồn hiện tại ($I_{current}$), tồn an toàn ($SS$) và điểm đặt hàng lại ($ROP$).
 
-#### 💡 **Bước 3: Đọc giải thích AI (Explainability) & Tinh chỉnh kịch bản**
-- Xem hộp **"Giải thích lý do (Explainability)"** để hiểu rõ tại sao AI đề xuất tăng/giảm lượng hàng (do yếu tố thời tiết mưa, ngày Rằm/Mùng 1 Âm lịch, hoặc chiến dịch khuyến mãi cuối tuần).
-- *(Tùy chọn mô phỏng)*: Người dùng có thể tùy biến các tham số trong **Bộ điều chỉnh tham số nhu cầu & an toàn**:
-  - $D$: Nhu cầu tiêu thụ trung bình mỗi ngày.
-  - $\sigma_d$: Độ lệch chuẩn biến động nhu cầu.
-  - $L$: Thời gian chờ giao hàng (Lead time).
-  - $Z$: Hệ số an toàn (tương ứng mức phục vụ Service Level từ 90% đến 99%).
-  - Kéo thanh trượt **Tồn kho thực tế ($I_{current}$)** để xem kết quả tính toán $Q$ biến thiên theo thời gian thực.
+#### 💡 **Bước 3: Đọc giải thích AI (Explainability)**
+- Xem hộp **"Giải thích lý do (Explainability)"** để hiểu rõ tại sao AI đề xuất con số $Q$ (do yếu tố thời tiết mưa bão, ngày Rằm/Mùng 1 Âm lịch, hoặc chiến dịch khuyến mãi cuối tuần).
 
 #### ✅ **Bước 4: Phê duyệt hoặc Điều chỉnh thủ công**
 - **Nút "Phê duyệt" (Màu xanh):** Đồng ý với đề xuất của AI và chuyển tiếp đơn hàng sang hệ thống ERP / Kho tổng.

@@ -80,21 +80,21 @@ export const calculateInventory = (D, sigma_d, L, Z, I_current) => {
   if (Q < 0) Q = 0;
 
   let status = 'NORMAL';
-  let statusText = 'Ổn định';
+  let statusText = 'Chưa cần nhập thêm';
   let statusColor = 'green';
 
   if (I_current < ROP) {
     status = 'REORDER_NOW';
-    statusText = 'Đặt hàng khẩn cấp';
+    statusText = 'Cần nhập gấp';
     statusColor = 'red';
   } else if (I_current < ROP * 1.25) {
     status = 'REORDER_SOON';
-    statusText = 'Cảnh báo sắp hết hàng';
+    statusText = 'Cân nhắc nhập số lượng phù hợp';
     statusColor = 'yellow';
   } else if (I_current > (D + SS) * 2.5) {
     status = 'OVERSTOCK';
-    statusText = 'Tồn kho quá cao';
-    statusColor = 'orange';
+    statusText = 'Chưa cần nhập thêm';
+    statusColor = 'green';
   }
 
   return { SS, ROP, Q, status, statusText, statusColor };
